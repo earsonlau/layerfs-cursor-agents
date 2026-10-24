@@ -28,7 +28,7 @@ The LayerFS commit this version was built against is `commit` in
 - Node.js 20 or newer, `git`, and `npm`.
 - A LayerFS checkout at the pinned commit. The setup script clones it if you
   do not already have one.
-- Linux, for real Store calls: Cargo 1.85.1 or newer, so
+- Linux, for real Store calls: the Rust 1.85.1 toolchain (`rustup toolchain install 1.85.1`), so
   `npm --prefix <checkout>/api run build:native` can build the addon, and
   `LAYERFS_STORE_PATH` pointing at the project's installed Store
   (`global/store.sqlite` on a local filesystem the daemons share).
@@ -51,8 +51,11 @@ Install LayerFS for Cursor (plugin id cursor-agents, package layerfs-cursor-agen
 1. Check the tools, once each. Stop if either is missing or Node is older than 20.
    node -v
    git --version
-2. From the repository root, run setup once:
+2. From the repository root, run setup once.
+   On Linux, pass --build-native so the in-process Store addon is built:
    node bin/layerfs-cursor-setup.js --build-native
+   On macOS and Windows, do not pass --build-native. Those routes use the worker. The native build throws on Windows, and macOS does not need a Rust toolchain for Store calls. Setup ignores the flag there:
+   node bin/layerfs-cursor-setup.js
    Add a flag only when you already know the value:
    --layerfs <checkout>
    --home <LAYERFS_HOME>
@@ -93,7 +96,8 @@ What the setup script does, in order:
    not touched.
 3. Runs `npm --prefix <checkout>/api install` and
    `npm --prefix <checkout>/api/agent/cli install`, once each.
-4. With `--build-native`, runs `npm --prefix <checkout>/api run build:native` once.
+4. On Linux, with `--build-native`, runs `npm --prefix <checkout>/api run build:native` once.
+   On macOS and Windows the flag is ignored. Store calls use the worker, and the native addon is not built.
 5. Links `@layerfs/agent` and `@layerfs/runtime` into this repo's
    `node_modules` (symlinks to the checkout, not copies of LayerFS source).
 6. Writes a `layerfs` shim into `--prefix` (default `~/.local/bin`) that runs

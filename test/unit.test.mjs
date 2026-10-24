@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { test } from "node:test";
-import { parseArgs } from "../src/args.mjs";
+import { HELP, parseArgs } from "../src/args.mjs";
 import { runtimePlatform } from "../src/platform.mjs";
 import { renderEnv, settingsForRoute, parseEnv } from "../src/env.mjs";
 import { refusalPlan } from "../src/refusals.mjs";
@@ -85,17 +85,21 @@ test("the plan is in-process on Linux and one worker start elsewhere", () => {
   const text = formatPlan(linux);
   assert.match(text, /store-route/);
   assert.doesNotMatch(text, /worker-start/);
-  const mac = buildPlan({ ...input, route: "worker", runtime: "macos", buildNative: true, cursorProject: "/proj" });
+  const linuxNative = buildPlan({ ...input, buildNative: true });
+  assert.match(formatPlan(linuxNative), /build-native/);
+  const mac = buildPlan({ ...input, route: "worker", runtime: "macos", buildNative: false, cursorProject: "/proj" });
   const macText = formatPlan(mac);
   assert.equal(mac.steps.filter((step) => step.id === "worker-start").length, 1);
-  assert.match(macText, /build-native/);
+  assert.doesNotMatch(macText, /build-native/);
   assert.match(macText, /endpoint\.json/);
 });
 
 test("args reject unknowns and missing values", () => {
   assert.equal(parseArgs(["--dry-run"]).dryRun, true);
   assert.equal(parseArgs(["check"]).command, "check");
+  assert.equal(parseArgs(["--build-native"]).buildNative, true);
   assert.throws(() => parseArgs(["--nope"]), /unknown option/);
   assert.throws(() => parseArgs(["--home"]), /needs a value/);
   assert.throws(() => parseArgs(["--home", "/a", "--home", "/b"]), /twice/);
+  assert.match(HELP, /Ignored on macOS and Windows/);
 });

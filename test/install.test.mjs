@@ -58,6 +58,16 @@ function scripted(io, { head = PIN, dirty = false, failNpm = false } = {}) {
   return io;
 }
 
+test("linux --build-native runs the native build once", async () => {
+  const io = scripted(memIo(baseFs()));
+  const result = await install(options(io, ["--build-native"]));
+  assert.equal(result.route, "in-process");
+  const native = io.calls.filter((call) => call[0] === "npm" && call.includes("build:native"));
+  assert.equal(native.length, 1);
+  assert.deepEqual(native[0], ["npm", "--prefix", `${REPO}/api`, "run", "build:native"]);
+  assert.doesNotMatch(io.logs.join("\n"), /Linux only/);
+});
+
 test("linux install is in-process and does not start a worker", async () => {
   const io = scripted(memIo(baseFs()));
   let runtimeLoads = 0;
@@ -120,7 +130,7 @@ test("dry-run prints the linux plan and runs nothing", async () => {
 test("macOS starts the worker once and records the endpoint", async () => {
   const io = scripted(memIo(baseFs()));
   const events = [];
-  const result = await install(options(io, ["--image", "sha256:abc", "--bundle", "/bundle"], {
+  const result = await install(options(io, ["--build-native", "--image", "sha256:abc", "--bundle", "/bundle"], {
     platform: "darwin",
     loadRuntime: async () => ({
       LayerFSRuntime: {
@@ -143,6 +153,8 @@ test("macOS starts the worker once and records the endpoint", async () => {
   }));
   assert.deepEqual(events, [["open", "macos", false, "sha256:abc"], "start", "close"]);
   assert.equal(result.hold, null);
+  assert.equal(io.calls.some((call) => call.includes("build:native")), false);
+  assert.match(io.logs.join("\n"), /Linux only/);
   assert.match(io.fs.get(`${ROOT}/layerfs.env`).data, /LAYERFS_WORKER_ENDPOINT='\/srv\/layerfs-home\/worker\/endpoint\.json'/);
   await install(options(io, ["check"], { platform: "darwin", env: { PATH: PREFIX } }));
   assert.equal(events.filter((event) => event === "start").length, 1);
@@ -178,7 +190,7 @@ test("a refused worker start is not repeated", async () => {
 test("Windows keeps the runtime open so the worker stays up", async () => {
   const io = scripted(memIo(baseFs({ [HOME]: dir(0o755) })));
   const events = [];
-  const result = await install(options(io, ["--bundle", "/bundle"], {
+  const result = await install(options(io, ["--build-native", "--bundle", "/bundle"], {
     platform: "win32",
     loadRuntime: async () => ({
       LayerFSRuntime: {
@@ -197,6 +209,8 @@ test("Windows keeps the runtime open so the worker stays up", async () => {
     }),
   }));
   assert.deepEqual(events, ["start"]);
+  assert.equal(io.calls.some((call) => call.includes("build:native")), false);
+  assert.match(io.logs.join("\n"), /Linux only/);
   assert.equal(typeof result.hold.close, "function");
   await result.hold.close();
   assert.deepEqual(events, ["start", "close"]);

@@ -91,7 +91,7 @@ Options:
   --bundle <dir>             Sealed Linux bundle (required to start the macOS/Windows worker)
   --container-prefix <text>  LAYERFS_CONTAINER_PREFIX
   --cursor-project <dir>     Copy .cursor/skills/layerfs-agent into this project
-  --build-native             Run npm --prefix <checkout>/api run build:native once
+  --build-native             On Linux, run npm --prefix <checkout>/api run build:native once. Ignored on macOS and Windows
   --dry-run                  Print the plan and write nothing
   --help                     Show this help
 

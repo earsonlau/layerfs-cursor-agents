@@ -50,6 +50,17 @@ test("the skill teaches the Cursor workflow", async () => {
   }
   assert.match(refusals, /Do not\s+send that call again/);
   assert.match(refusals, /containerGone/);
+  assert.match(skill, /isRefusal\(error, "Conflict"\)/);
+  assert.match(skill, /if \(!conflict\) await layerfs\.workspace\.unmount\(ws\)/);
+  assert.doesNotMatch(skill, /finally \{\n  await layerfs\.workspace\.unmount\(ws\);\n\}/);
+});
+
+test("readme pins the Rust 1.85.1 toolchain and does not always build native", async () => {
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  assert.match(readme, /rustup toolchain install 1\.85\.1/);
+  assert.doesNotMatch(readme, /1\.85\.1 or newer/);
+  assert.match(readme, /On macOS and Windows, do not pass --build-native/);
+  assert.match(readme, /On Linux, pass --build-native/);
 });
 
 test("plugin source does not import LayerFS internals or backend", async () => {

@@ -70,6 +70,14 @@ export async function install(options) {
     });
   }
 
+  // The native addon is the Linux in-process Store path. macOS and Windows
+  // use the worker. build-native.mjs throws on win32, and macOS does not
+  // need a Rust toolchain for the worker route.
+  const buildNative = parsed.buildNative && platform.route === "in-process";
+  if (parsed.buildNative && !buildNative) {
+    io.log("--build-native applies on Linux only; macOS and Windows use the worker and skip the native build");
+  }
+
   const plan = buildPlan({
     route: platform.route,
     runtime: platform.runtime,
@@ -77,7 +85,7 @@ export async function install(options) {
     layerfsRepo,
     home,
     prefix,
-    buildNative: parsed.buildNative,
+    buildNative,
     cursorProject,
     packageRoot: root,
   });
@@ -95,7 +103,7 @@ export async function install(options) {
   });
   await io.run("npm", ["--prefix", join(layerfsRepo, "api"), "install", "--no-audit", "--no-fund"]);
   await io.run("npm", ["--prefix", join(layerfsRepo, "api", "agent", "cli"), "install", "--no-audit", "--no-fund"]);
-  if (parsed.buildNative) {
+  if (buildNative) {
     await io.run("npm", ["--prefix", join(layerfsRepo, "api"), "run", "build:native"]);
   }
 

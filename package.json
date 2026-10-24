@@ -1,0 +1,29 @@
+{
+  "name": "layerfs-cursor-agents",
+  "version": "0.1.0",
+  "description": "LayerFS for Cursor: Branches and Workspaces for Cursor coding agents, instead of git worktrees.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "layerfs-cursor-setup": "./bin/layerfs-cursor-setup.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:e2e": "LAYERFS_CURSOR_E2E=1 node --test test/e2e.test.mjs",
+    "setup": "node ./bin/layerfs-cursor-setup.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "examples",
+    "layerfs.json",
+    "logo.svg",
+    ".cursor/skills",
+    ".agents/skills",
+    "README.md",
+    "LICENSE"
+  ]
+}

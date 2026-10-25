@@ -5,7 +5,7 @@ import { install } from "../src/install.mjs";
 import { workerEndpoint } from "../src/worker.mjs";
 import { dir, file, memIo } from "./memio.mjs";
 
-const PIN = "9f97a7ec95b662e9cb288704afa165feff132cfa";
+const PIN = "ad78914e36b258b360daf13aec164b5655814689";
 const ROOT = "/plugin";
 const REPO = "/layerfs-src";
 const HOME = "/srv/layerfs-home";

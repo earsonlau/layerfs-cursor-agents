@@ -10,7 +10,7 @@ This repository is for Cursor only. It does not install Claude Code skills,
 hooks, or configuration, and it does not ship a history dashboard.
 
 The LayerFS commit this version was built against is `commit` in
-[`layerfs.json`](layerfs.json): `9f97a7ec95b662e9cb288704afa165feff132cfa`
+[`layerfs.json`](layerfs.json): `ad78914e36b258b360daf13aec164b5655814689`
 (LayerFS v1.1.0).
 
 ## What it adds

@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 
 const repo = process.env.LAYERFS_REPO;
-const pin = "9f97a7ec95b662e9cb288704afa165feff132cfa";
+const pin = "ad78914e36b258b360daf13aec164b5655814689";
 
 test("public SDK over the stand-in binding, one mount attempt", { skip: !repo && "LAYERFS_REPO is unset" }, () => {
   const head = spawnSync("git", ["-C", repo, "rev-parse", "HEAD"], { encoding: "utf8" });

@@ -107,23 +107,33 @@ Default is one Workspace per command. Mounting does not copy the tree.
 ```js
 const { sandbox } = await layerfs.sandbox.create();
 const ws = await layerfs.workspace.mount(sandbox, "task-name");
+let conflict = false;
 try {
   const run = await layerfs.workspace.exec(ws, "npm test", "step: npm test");
   // A non-zero exitCode is the command's result, not a LayerFS refusal.
-  await layerfs.workspace.commit(ws, `step: npm test (exit ${run.exitCode})`);
+  try {
+    await layerfs.workspace.commit(ws, `step: npm test (exit ${run.exitCode})`);
+  } catch (error) {
+    if (!isRefusal(error, "Conflict")) throw error;
+    conflict = true;
+  }
 } finally {
-  await layerfs.workspace.unmount(ws);
+  // A Conflict leaves this Workspace mounted. Markers exist only here.
+  if (!conflict) await layerfs.workspace.unmount(ws);
 }
 ```
 
-The same sequence with the command:
+The same sequence with the command. `commit` exits 0 on `Committed` and on
+`UpToDate`. It exits 125 when LayerFS refuses the call. A `Conflict` (that
+125, with `"code":"Conflict"`) must not be followed by `unmount`:
 
 ```bash
 layerfs sandbox create
 layerfs workspace mount <sandbox> task-name
 layerfs workspace exec <sandbox>:/workspaces/N "npm test" -m "step: npm test" --stream
-layerfs workspace commit <sandbox>:/workspaces/N -m "step: npm test (exit N)"
-layerfs workspace unmount <sandbox>:/workspaces/N
+if layerfs workspace commit <sandbox>:/workspaces/N -m "step: npm test (exit N)"; then
+  layerfs workspace unmount <sandbox>:/workspaces/N
+fi
 ```
 
 `workspace mount` prints `ws` as `<sandbox>:<path>`. Pass that string to the
@@ -133,10 +143,11 @@ mount path. Keep each command under two minutes (`timeout 110 npm test`).
 
 Commit after the command, including a failing one, so the Branch records the
 step. `commit` returns `UpToDate` when the command changed nothing; that is
-not a failure. Unmount in `finally`. On a `Conflict` from `commit`, do not
-unmount until you have resolved that Workspace or decided to discard it with
-`workspace.unmount(ws, true)`. A new mount is a new Workspace and does not
-have the conflict markers.
+not a failure. Unmount in `finally` only when `commit` did not refuse
+`Conflict`. On a `Conflict` from `commit`, leave the Workspace mounted until
+you have resolved it or decided to discard it with
+`workspace.unmount(ws, true)` (`layerfs workspace unmount <ws> --discard`).
+A new mount is a new Workspace and does not have the conflict markers.
 
 `sandbox.create()` is the only call that starts a Sandbox. Mount never does.
 A Sandbox holds 16 Workspaces. `NoSuchSandbox` and `Capacity` are handled in

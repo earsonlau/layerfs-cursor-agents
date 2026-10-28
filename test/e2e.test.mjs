@@ -12,7 +12,7 @@ test("docker workspace round trip", { skip: !enabled && "set LAYERFS_CURSOR_E2E=
   const missing = required.filter((name) => !process.env[name]);
   assert.equal(missing.length, 0, `missing ${missing.join(", ")}`);
   const repo = process.env.LAYERFS_REPO;
-  const { LayerFS } = await import(pathToFileURL(join(repo, "api", "agent", "sdk", "src", "index.js")).href);
+  const { LayerFS } = await import(pathToFileURL(join(repo, "api", "agent", "src", "index.js")).href);
   const branch = `e2e-${Date.now().toString(36)}`;
   const layerfs = await LayerFS.open(process.env.LAYERFS_PROJECT);
   let sandbox;

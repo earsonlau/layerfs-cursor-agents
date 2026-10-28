@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import { parsePin, readPin } from "../src/pin.mjs";
 
-const PIN = "ad78914e36b258b360daf13aec164b5655814689";
+const PIN = "4b5276216a2e9f780194a554ef9f0c33f9b6ba6d";
 
 test("layerfs.json pins LayerFS v1.1.0", async () => {
   const pin = await readPin(new URL("../layerfs.json", import.meta.url));

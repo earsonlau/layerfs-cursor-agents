@@ -63,8 +63,8 @@ test("refusals are one handling and never a replay", () => {
 });
 
 test("the shim runs the official command and nothing else", () => {
-  const source = shimSource("/opt/layerfs/api/agent/cli/src/layerfs.js");
-  assert.match(source, /\/opt\/layerfs\/api\/agent\/cli\/src\/layerfs\.js/);
+  const source = shimSource("/opt/layerfs/api/cli/src/layerfs.js");
+  assert.match(source, /\/opt\/layerfs\/api\/cli\/src\/layerfs\.js/);
   assert.doesNotMatch(source, /@layerfs\/agent\/internal/);
   assert.doesNotMatch(source, /retry/);
 });

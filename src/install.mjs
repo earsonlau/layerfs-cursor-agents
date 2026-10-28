@@ -102,7 +102,7 @@ export async function install(options) {
     stat: io.stat,
   });
   await io.run("npm", ["--prefix", join(layerfsRepo, "api"), "install", "--no-audit", "--no-fund"]);
-  await io.run("npm", ["--prefix", join(layerfsRepo, "api", "agent", "cli"), "install", "--no-audit", "--no-fund"]);
+  await io.run("npm", ["--prefix", join(layerfsRepo, "api", "cli"), "install", "--no-audit", "--no-fund"]);
   if (buildNative) {
     await io.run("npm", ["--prefix", join(layerfsRepo, "api"), "run", "build:native"]);
   }
@@ -148,7 +148,7 @@ export async function install(options) {
       hold = started.hold;
     }
 
-    const native = join(layerfsRepo, "api", "binding", "layerfs.node");
+    const native = join(layerfsRepo, "engine", "crates", "layerfs-node", "layerfs.node");
     const nativeStat = await io.stat(native);
     const body = renderEnv(settingsForRoute(platform.route, {
       LAYERFS_HOME: home,
@@ -190,7 +190,7 @@ export async function install(options) {
 async function linkPackages(packageRoot, layerfsRepo, io) {
   const scope = join(packageRoot, "node_modules", "@layerfs");
   await io.mkdir(scope, 0o755);
-  await ensureLink(io, join(layerfsRepo, "api", "agent", "sdk"), join(scope, "agent"));
+  await ensureLink(io, join(layerfsRepo, "api", "agent"), join(scope, "agent"));
   await ensureLink(io, join(layerfsRepo, "api", "runtime"), join(scope, "runtime"));
 }
 

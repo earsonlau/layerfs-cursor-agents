@@ -5,12 +5,12 @@ import { install } from "../src/install.mjs";
 import { workerEndpoint } from "../src/worker.mjs";
 import { dir, file, memIo } from "./memio.mjs";
 
-const PIN = "ad78914e36b258b360daf13aec164b5655814689";
+const PIN = "4b5276216a2e9f780194a554ef9f0c33f9b6ba6d";
 const ROOT = "/plugin";
 const REPO = "/layerfs-src";
 const HOME = "/srv/layerfs-home";
 const PREFIX = "/opt/bin";
-const CLI = `${REPO}/api/agent/cli/src/layerfs.js`;
+const CLI = `${REPO}/api/cli/src/layerfs.js`;
 
 function baseFs(extra = {}) {
   return {
@@ -87,12 +87,13 @@ test("linux install is in-process and does not start a worker", async () => {
   assert.doesNotMatch(env, /LAYERFS_WORKER_ENDPOINT/);
   assert.match(io.fs.get(`${PREFIX}/layerfs`).data, new RegExp(CLI.replaceAll("/", "\\/")));
   assert.equal(io.fs.get(HOME).mode, 0o700);
-  assert.equal(io.fs.get(`${ROOT}/node_modules/@layerfs/agent`).data, `${REPO}/api/agent/sdk`);
+  assert.equal(io.fs.get(`${ROOT}/node_modules/@layerfs/agent`).data, `${REPO}/api/agent`);
   assert.equal(io.fs.get(`${ROOT}/node_modules/@layerfs/runtime`).data, `${REPO}/api/runtime`);
   const checked = await install(options(io, ["check"], { env: { PATH: PREFIX } }));
   assert.equal(checked.pin.commit, PIN);
   assert.equal(checked.onPath, true);
   assert.equal(io.calls.filter((call) => call[0] === "npm").length, 2);
+  assert.ok(io.calls.some((call) => call[0] === "npm" && call[2] === `${REPO}/api/cli`));
 });
 
 test("a dirty checkout at the wrong commit is not modified", async () => {

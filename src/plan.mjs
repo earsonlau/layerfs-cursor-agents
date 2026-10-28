@@ -32,7 +32,7 @@ export function absolutePath(value, cwd, label) {
  */
 export function buildPlan(input) {
   const api = join(input.layerfsRepo, "api");
-  const cli = join(input.layerfsRepo, "api", "agent", "cli");
+  const cli = join(input.layerfsRepo, "api", "cli");
   const steps = [
     { id: "checkout", detail: `${input.layerfsRepo} @ ${input.commit}` },
     { id: "npm-api", detail: api },

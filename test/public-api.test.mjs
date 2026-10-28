@@ -6,15 +6,15 @@ import { spawnSync } from "node:child_process";
 import { test } from "node:test";
 
 const repo = process.env.LAYERFS_REPO;
-const pin = "ad78914e36b258b360daf13aec164b5655814689";
+const pin = "4b5276216a2e9f780194a554ef9f0c33f9b6ba6d";
 
 test("public SDK over the stand-in binding, one mount attempt", { skip: !repo && "LAYERFS_REPO is unset" }, () => {
   const head = spawnSync("git", ["-C", repo, "rev-parse", "HEAD"], { encoding: "utf8" });
   assert.equal(head.status, 0, head.stderr);
   assert.equal(head.stdout.trim(), pin);
 
-  const fake = join(repo, "api/agent/sdk/test/fixture/fake-native.cjs");
-  const sdk = join(repo, "api/agent/sdk/src/index.js");
+  const fake = join(repo, "api/agent/test/fixture/fake-native.cjs");
+  const sdk = join(repo, "api/agent/src/index.js");
   const dir = mkdtempSync(join(tmpdir(), "layerfs-cursor-"));
   try {
     const workflow = join(dir, "workflow.mjs");
@@ -73,7 +73,7 @@ test("public SDK over the stand-in binding, one mount attempt", { skip: !repo &&
     const mounts = readFileSync(log, "utf8").split("\n").filter((line) => line.includes('"workspace.mount"'));
     assert.equal(mounts.length, 1);
 
-    const help = spawnSync(process.execPath, [join(repo, "api/agent/cli/src/layerfs.js"), "help"], { encoding: "utf8" });
+    const help = spawnSync(process.execPath, [join(repo, "api/cli/src/layerfs.js"), "help"], { encoding: "utf8" });
     assert.equal(help.status, 0, help.stderr);
     assert.match(help.stdout, /branch fork/);
 

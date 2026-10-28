@@ -11,7 +11,7 @@ if (!repo || !project || !branch) {
 
 // Public package entry of the pinned checkout.
 const { LayerFS, isRefusal } = await import(
-  pathToFileURL(join(repo, "api", "agent", "sdk", "src", "index.js")).href
+  pathToFileURL(join(repo, "api", "agent", "src", "index.js")).href
 );
 
 const layerfs = await LayerFS.open(project);

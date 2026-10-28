@@ -2,7 +2,7 @@ import { dirname, join } from "node:path";
 
 /** Absolute path of the official layerfs command inside a checkout. */
 export function officialCli(layerfsRepo) {
-  return join(layerfsRepo, "api", "agent", "cli", "src", "layerfs.js");
+  return join(layerfsRepo, "api", "cli", "src", "layerfs.js");
 }
 
 /** A PATH shim that runs the official command. It adds no calls of its own. */

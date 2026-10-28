@@ -40,7 +40,7 @@ Two ways in, both public:
 
 Do not import `@layerfs/agent/internal`. Do not import `@layerfs/backend` or
 LayerFS source into a tool. The method reference is
-`$LAYERFS_REPO/api/how-to-use/agent.md`.
+`$LAYERFS_REPO/api/docs/agent.md`.
 
 `LAYERFS_PROJECT` is the project name. `main` is read-only. Read it and fork
 from it. `fs.write`, `fs.edit`, `workspace.mount`, and `workspace.commit` on

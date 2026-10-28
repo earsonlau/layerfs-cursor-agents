@@ -39,7 +39,7 @@ export async function checkInstall(input) {
   if (head !== pin.commit) {
     throw new SetupError(`LayerFS checkout ${input.layerfsRepo} is ${head}, not ${pin.commit}`, { step: "check" });
   }
-  await expectLink(input.io, join(input.packageRoot, "node_modules", "@layerfs", "agent"), join(input.layerfsRepo, "api", "agent", "sdk"));
+  await expectLink(input.io, join(input.packageRoot, "node_modules", "@layerfs", "agent"), join(input.layerfsRepo, "api", "agent"));
   await expectLink(input.io, join(input.packageRoot, "node_modules", "@layerfs", "runtime"), join(input.layerfsRepo, "api", "runtime"));
   const cli = officialCli(input.layerfsRepo);
   const cliStat = await input.io.stat(cli);

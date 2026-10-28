@@ -10,7 +10,7 @@ This repository is for Cursor only. It does not install Claude Code skills,
 hooks, or configuration, and it does not ship a history dashboard.
 
 The LayerFS commit this version was built against is `commit` in
-[`layerfs.json`](layerfs.json): `ad78914e36b258b360daf13aec164b5655814689`
+[`layerfs.json`](layerfs.json): `4b5276216a2e9f780194a554ef9f0c33f9b6ba6d`
 (LayerFS v1.1.0).
 
 ## What it adds
@@ -95,13 +95,13 @@ What the setup script does, in order:
    one `git fetch` of that commit, then one `git checkout`. A dirty tree is
    not touched.
 3. Runs `npm --prefix <checkout>/api install` and
-   `npm --prefix <checkout>/api/agent/cli install`, once each.
+   `npm --prefix <checkout>/api/cli install`, once each.
 4. On Linux, with `--build-native`, runs `npm --prefix <checkout>/api run build:native` once.
    On macOS and Windows the flag is ignored. Store calls use the worker, and the native addon is not built.
 5. Links `@layerfs/agent` and `@layerfs/runtime` into this repo's
    `node_modules` (symlinks to the checkout, not copies of LayerFS source).
 6. Writes a `layerfs` shim into `--prefix` (default `~/.local/bin`) that runs
-   `<checkout>/api/agent/cli/src/layerfs.js`. That is the official command.
+   `<checkout>/api/cli/src/layerfs.js`. That is the official command.
 7. Creates `LAYERFS_HOME` as mode `0700` when it is missing (default
    `~/.local/share/layerfs-cursor-agents/home`). An existing home that is
    group- or world-accessible is left unchanged and setup stops.

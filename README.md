@@ -5,7 +5,7 @@ worktrees. One task gets one Branch. File edits go through `fs.*`. Bash runs
 as `workspace.mount`, then `exec`, `commit`, and `unmount`. Each LayerFS call
 is attempted once.
 
-Plugin id: `cursor-agents`. Package: `layerfs-cursor-agents` `0.1.0`.
+Plugin id: `cursor-agents`. Package: `layerfs-cursor-agents` `0.1.1`.
 This repository is for Cursor only. It does not install Claude Code skills,
 hooks, or configuration, and it does not ship a history dashboard.
 

@@ -11,7 +11,7 @@ import { buildPlan, formatPlan } from "../src/plan.mjs";
 test("package.json is the Cursor plugin", async () => {
   const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
   assert.equal(pkg.name, "layerfs-cursor-agents");
-  assert.equal(pkg.version, "0.1.0");
+  assert.equal(pkg.version, "0.1.1");
   assert.equal(pkg.license, "MIT");
   assert.equal(pkg.type, "module");
   assert.equal(pkg.engines.node, ">=20");
